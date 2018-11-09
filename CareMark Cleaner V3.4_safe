@@ -1,0 +1,582 @@
+import Tkinter
+import pandas as pd
+import xlsxwriter
+
+
+class simpleapp_tk(Tkinter.Tk):
+    def __init__(self,parent):
+        Tkinter.Tk.__init__(self,parent)
+        self.parent = parent
+        self.initialize()
+
+    def initialize(self):
+        self.grid() # Create the grid
+
+
+
+        #Label for entering filename
+        label_one = Tkinter.Label(self, text="Please Enter a Filename:",anchor="w",fg="black",
+                                  font="Times_New_Roman 10 bold")                              
+        label_one.grid(column=0,row=1,sticky='W')
+		
+		
+        #Label for entering filename
+        label_one2 = Tkinter.Label(self, text="Please Enter a 2nd Filename:",anchor="w",fg="black",
+                                  font="Times_New_Roman 10 bold")                              
+        label_one2.grid(column=0,row=2,sticky='W')		
+
+
+        #Example label
+        label_two = Tkinter.Label(self, text="RXInfoAug1.xlsx",anchor="center",fg="black",
+                                  font="Times_New_Roman 10")
+                                  
+        label_two.grid(column=1,row=3,sticky='EW')
+
+
+        #Creating label area for user information.
+        label_three = Tkinter.Label(self, text="Please select User:",anchor='w',fg='black',
+                                    font="Times_New_Roman 10 bold")
+        label_three.grid(column=0,row=4,sticky='EW')
+
+
+
+        #Label four is for EXAMPLE text
+        label_four = Tkinter.Label(self,text="Example:",anchor='w',fg='black',
+                                   font="Times_New_Roman 10 bold")
+        label_four.grid(column=0,row=3,sticky='W')
+
+
+        #Label five is below Generate RX report, spits out result information.
+        label_five = Tkinter.Label(self,text="----------Result Info----------",anchor='center',
+                                   fg='black',font="Times_New_Roman 10 bold")
+        label_five.grid(column=0,row=6,sticky='EW',columnspan=2)
+
+
+        #Label six is return information after clicking the button
+        self.labelVariable_six = Tkinter.StringVar()  #have to create a variable to return
+        
+        label_six = Tkinter.Label(self,text="None",anchor='center',fg='white',bg="blue",
+                                  font='Times_New_Roman 10 bold',
+                                  textvariable=self.labelVariable_six) #notice the return variable
+        label_six.grid(column=0,row=8,sticky='EW',columnspan=2)
+
+        #Label seven is more return information, pertaining to after you click the button.
+        self.labelVariable_seven = Tkinter.StringVar() #creating the return variable
+
+        label_seven = Tkinter.Label(self,text="None",anchor='center',fg='white',bg='blue',
+                                    font='Times_New_Roman 10 bold',
+                                    textvariable=self.labelVariable_seven)
+        label_seven.grid(column=0,row=9,sticky='EW',columnspan=2)
+        
+
+        #Entry Variable creation and location set.
+        self.entryVariable = Tkinter.StringVar()
+        self.entry = Tkinter.Entry(self,textvariable=self.entryVariable) #NOTICE the entry var name
+        self.entry.grid(column=1,row=1,sticky='EW')
+		
+        #Entry Variable2 creation and location set.
+        self.entryVariable2 = Tkinter.StringVar()
+        self.entry2 = Tkinter.Entry(self,textvariable=self.entryVariable2) #NOTICE the entry var name
+        self.entry2.grid(column=1,row=2,sticky='EW')		
+		
+    
+        #Creating the variable of which user used by option menu
+        self.var = Tkinter.StringVar(self)
+        self.var.set("User")
+
+        #Creating a drop down menu for user selection
+        self.option_menu = Tkinter.OptionMenu(self, self.var, "Corey","Warwick","Jane", "Jacque")
+        self.option_menu.grid(column=1,row=4,sticky='EW')
+
+
+        #Button to generate reports - When clicked runs OnButtonClick
+        button = Tkinter.Button(self,text="Generate RX Report",
+                                font="Times_New_Roman 12 bold",
+                                command=self.OnButtonClick)
+        button.grid(column=0,row=6,sticky="EW",columnspan=2)
+
+
+        self.labelVariable_six.set("Enter a filename from your Desktop")
+        self.labelVariable_seven.set("Please make sure to select a User")
+
+        #Layout management area
+        self.grid_columnconfigure(0,weight=1)
+        self.grid_columnconfigure(1,weight=1)
+
+
+        #Layout Manager resizes if you adjust window
+        self.resizable(True,True)
+        self.update()
+        #sets canvas size (Length, depth)
+        self.geometry("320x170+300+300")
+		
+        self.entry.focus_set()
+        self.entry.selection_range(0, Tkinter.END)
+        self.entry2.selection_range(0, Tkinter.END)
+
+            
+    def OnButtonClick(self):
+        UserName = self.var.get()
+        FileName = self.entryVariable.get()
+        
+
+        if UserName == "User":
+            self.labelVariable_six.set("Please select a User before Continuing")
+            self.labelVariable_seven.set("")
+        elif UserName == "Corey":
+            FilePath = "\cashley\Desktop\\"
+            self.labelVariable_six.set("Welcome Corey, enjoy the report.")
+            self.labelVariable_seven.set("Output file is located on desktop")
+            writer = pd.ExcelWriter('C:\\Users\\cashley\\Desktop\\RX_STATS.xlsx')
+        elif UserName == "Warwick":
+            FilePath = "\wbarlow.GMSPRIMARY\Desktop\\"
+            self.labelVariable_six.set("Welcome Warwick, always great to see you")
+            self.labelVariable_seven.set("Output file is RX_STATS located on desktop")
+            writer = pd.ExcelWriter('C:\\Users\\wbarlow.GMSPRIMARY\\Desktop\\RX_STATS.xlsx')
+        elif UserName == "Jane":
+            FilePath = "\janen.GMSPRIMARY\Desktop\\"
+            self.labelVariable_six.set("Welcome Jane, enjoy the report")
+            self.labelVariable_seven.set("Output file is RX_STATS located on desktop")
+            writer = pd.ExcelWriter('C:\\Users\\janen.GMSPRIMARY\\Desktop\\RX_STATS.xlsx')
+        elif UserName == "Jacque":
+            FilePath = "\jacquea\Desktop\\"
+            self.labelVariable_six.set("Welcome Jacquea, enjoy the report")
+            self.labelVariable_seven.set("Output file is RX_STATS located on desktop")
+            writer = pd.ExcelWriter('C:\\Users\\jacquea\\Desktop\\RX_STATS.xlsx')
+            
+            
+        if len(self.entryVariable2.get()) > 0:
+            FileName2 = self.entryVariable2.get()
+            result = make_me_a_spreadsheet(FilePath, FileName, FileName2, writer)
+        else:
+            result = make_me_a_spreadsheet2(FilePath, FileName, writer)
+            
+            
+        if result:
+            self.entry.focus_set()
+            self.entry.selection_range(0, Tkinter.END)
+        else:
+            self.labelVariable_six.set("Confirm User is Accurate.")
+            self.labelVariable_seven.set("Confirm Your Filenames.")
+            
+emp_dict = {
+
+
+
+}
+
+group_dict = {
+
+}
+            
+       
+            
+def make_me_a_spreadsheet(FilePath, FileName, FileName2, writer):
+    try:
+        df = pd.read_excel("C:\Users" + FilePath + FileName)
+
+        #DF_C Was added in so you can bring two files in to compare the two.
+        df_C = pd.read_excel("C:\Users" + FilePath + FileName2)
+
+        df.columns = ['GROUP','MEMBER_NAME','DRUG','CLAIM_DATE','SUB_QUANT','DAYS_SUPPLY','COPAY_AMT','TOTAL_COST']
+        df_C.columns = ['GROUP','MEMBER_NAME','DRUG','CLAIM_DATE','SUB_QUANT','DAYS_SUPPLY','COPAY_AMT','TOTAL_COST']
+
+        df['GROUP'] = df['GROUP'].astype(str)
+        df_C['GROUP'] = df_C['GROUP'].astype(str)
+
+        total_expense = df['TOTAL_COST'].sum()
+        Y = total_expense * .80
+        df['PERCENT'] = (df['TOTAL_COST'] / total_expense).round(4)
+
+        #Bad DRY here but metrics for analysis for df_C
+        total_expense_C = df_C['TOTAL_COST'].sum()
+        Y_C = total_expense_C * .80
+        df_C['PERCENT'] = (df_C['TOTAL_COST'] / total_expense_C).round(4)            
+
+
+        df['MEMBER_NAME'].replace(emp_dict, inplace=True)
+        df.loc[df.DRUG.isin(['LATUDA TAB 20MG', 'LATUDA TAB 60MG','LATUDA TAB 40MG']), 'DRUG'] = 'LATUDA TAB'
+        df.loc[df.DRUG.isin(['HUMIRA START KIT 40MG PEN', 'HUMIRA PEN INJ 40MG/0.8','HUMIRA KIT 40MG SYN']), 'DRUG'] = 'HUMIRA'
+        df.loc[df.DRUG.isin(['ENBREL SCLIK SYR 50MG/ML', 'ENBREL SYR 50MG/ML','ENBREL SYR 25/0.5ML']), 'DRUG'] = 'ENBREL'
+        df.loc[df.DRUG.isin(['TRULICITY(4) PEN 1.5/0.5', 'TRULICITY(4) PEN 0.75/0.5']), 'DRUG'] = 'TRULICITY'
+
+
+        df_C['MEMBER_NAME'].replace(emp_dict, inplace=True)
+        df_C.loc[df_C.DRUG.isin(['LATUDA TAB 20MG', 'LATUDA TAB 60MG','LATUDA TAB 40MG']), 'DRUG'] = 'LATUDA TAB'
+        df_C.loc[df_C.DRUG.isin(['HUMIRA START KIT 40MG PEN', 'HUMIRA PEN INJ 40MG/0.8','HUMIRA KIT 40MG SYN']), 'DRUG'] = 'HUMIRA'
+        df_C.loc[df_C.DRUG.isin(['ENBREL SCLIK SYR 50MG/ML', 'ENBREL SYR 50MG/ML','ENBREL SYR 25/0.5ML']), 'DRUG'] = 'ENBREL'
+        df_C.loc[df_C.DRUG.isin(['TRULICITY(4) PEN 1.5/0.5', 'TRULICITY(4) PEN 0.75/0.5']), 'DRUG'] = 'TRULICITY'            
+
+
+        df2 = df['TOTAL_COST'].groupby(df['MEMBER_NAME']).sum().nlargest(10)
+        df3 = df['TOTAL_COST'].groupby(df['DRUG']).sum().nlargest(20)
+        df4 = df['MEMBER_NAME'].value_counts().nlargest(20)
+        df5 = df['PERCENT'].groupby(df['MEMBER_NAME']).sum().nlargest(20)
+        df7 = df[df['TOTAL_COST'] > 0]
+        df8 = df['TOTAL_COST'].groupby(df['MEMBER_NAME']).sum().nlargest(1000)
+        df13 = df['TOTAL_COST'].groupby(df['GROUP']).sum().nlargest(5)
+
+        count = 0
+        total = 0
+        for row in df8:
+            if total < Y:
+                total = total + row
+                count += 1
+        WW = count
+
+        #Count of how many Members are in the file. It combines duplicate individuals with nunique.
+        Ind_count = df['MEMBER_NAME'].nunique()
+        # Count of non zero individuals in the file.
+        Ind_count_nonzero = df7['MEMBER_NAME'].nunique()
+
+        # Finding what 20 percent of the total is
+        twenty_percent1 = Ind_count_nonzero * .20
+        twenty_percent = round(twenty_percent1,0)
+
+        row_count = df.shape[0]
+
+        df10 = df['PERCENT'].groupby(df['MEMBER_NAME']).sum().nlargest(WW)
+        df['GROUP'].replace(group_dict, inplace=True)
+        df_C['GROUP'].replace(group_dict, inplace=True)
+
+        df15 = df_C[~df_C.MEMBER_NAME.isin(df.MEMBER_NAME)] 
+        pivot_C = pd.pivot_table(df15, index=['MEMBER_NAME','GROUP'],values=['TOTAL_COST'], aggfunc='sum')           
+        pivot_C2 = pivot_C.sort_values(by=['TOTAL_COST'],ascending=False)
+        pv_C = pivot_C2.head(20)
+        pv_C2 = pv_C.reset_index()
+
+
+        df13 = df['TOTAL_COST'].groupby(df['GROUP']).sum().nlargest(5)
+        df3 = df3.reset_index()
+        df2 = df2.reset_index()
+        df4 = df4.reset_index()
+        df5 = df5.reset_index()
+        df10 = df10.reset_index()
+        df13 = df13.reset_index()
+
+        pivot2 = pd.pivot_table(df, index=['MEMBER_NAME','GROUP'],values=['TOTAL_COST'], aggfunc='sum')
+        pivot3 = pivot2.sort_values(by=['TOTAL_COST'],ascending=False)
+
+
+        pv3 = pivot3.head(20)
+
+
+        pv4 = pv3.reset_index()
+
+        # we already imported the writer from the class. No need to redefine causes issues.
+        #writer = pd.ExcelWriter('C:\\Users' + FilePath + 'RX_STATS.xlsx')
+
+        pv4.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=0,startrow=10)
+        pv_C2.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=0,startrow=35)
+        df3.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=4,startrow=10)
+        df4.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=7,startrow=10)
+        df10.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=10,startrow=10)
+        df13.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=4,startrow=0)
+        df.to_excel(writer, sheet_name='Raw Data',index=False,header=True)
+        df_C.to_excel(writer, sheet_name='Compare Data',index=False,header=True)
+
+        worksheet1 = writer.sheets['Summary']
+        worksheet2 = writer.sheets['Raw Data']
+        worksheet3 = writer.sheets['Compare Data']
+        workbook = writer.book
+
+        format1 = workbook.add_format({'num_format':'$#,###.##'})
+        format6 = workbook.add_format({'num_format':'$#,###.##','bold':True})
+        format2 = workbook.add_format({'bold': True})
+        format5 = workbook.add_format({'bold': True,'border':1,'align':'center'})
+        format3 = workbook.add_format({'bold': True, 'align': 'center'})
+        format4 = workbook.add_format({'num_format':'0.00%'})
+        merge_format = workbook.add_format({
+            'bold':1,
+            'border':1,
+            'align':'center'})
+
+
+        worksheet1.write('A1', "Caremark File Statistics", format2)
+        worksheet1.write('A6', "Individual Count:", format2)
+        worksheet1.write('A3', "Individual Non-Zero Count:", format2)
+        worksheet1.write('A4', "Twenty percent of all individuals:", format2)
+        worksheet1.write('A5', "Count representing eighty percent:", format2)
+        worksheet1.write('A2', "RX Total Expense:", format2)
+
+        worksheet1.write('B6', Ind_count, format2)
+        worksheet1.write('B3', Ind_count_nonzero, format2)
+        worksheet1.write('B4', twenty_percent, format2)
+        worksheet1.write('B5', WW, format2)
+        worksheet1.write('B2', total_expense, format6)
+
+
+        worksheet1.conditional_format('C12:C31',{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':1,
+                                    'format':format1})
+
+        worksheet1.conditional_format('F12:F31',{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':1,
+                                    'format':format1})
+
+        worksheet1.conditional_format(11,11,11+WW,11,{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':0,
+                                    'format':format4})
+
+        worksheet1.conditional_format('F2:F6',{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':0,
+                                    'format':format1})
+        worksheet2.conditional_format(1,8,row_count,8,{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':0,
+                                    'format':format4})
+
+        worksheet3.conditional_format(1,8,row_count,8,{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':0,
+                                    'format':format4})
+
+
+        worksheet1.conditional_format('C37:C56',{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':1,
+                                    'format':format1})            
+
+
+        worksheet1.set_column(0,0,32)
+        worksheet1.set_column(1,1,35)
+        worksheet1.set_column(2,2,12)
+        worksheet1.set_column(3,3,5)
+        worksheet1.set_column(4,4,36)
+        worksheet1.set_column(5,5,12)
+        worksheet1.set_column(6,6,5)
+        worksheet1.set_column(7,7,30)
+        worksheet1.set_column(8,8,12)
+        worksheet1.set_column(9,9,5)
+        worksheet1.set_column(10,10,30)
+        worksheet1.set_column(11,11,12)
+
+        worksheet2.set_column(0,0,35)
+        worksheet2.set_column(1,1,30)
+        worksheet2.set_column(2,2,35)
+        worksheet2.set_column(3,3,20)
+        worksheet2.set_column(4,4,13)
+        worksheet2.set_column(5,5,13)
+        worksheet2.set_column(6,6,13)
+        worksheet2.set_column(7,7,13)
+        worksheet2.set_column(8,8,9)
+
+
+        worksheet3.set_column(0,0,35)
+        worksheet3.set_column(1,1,30)
+        worksheet3.set_column(2,2,35)
+        worksheet3.set_column(3,3,20)
+        worksheet3.set_column(4,4,13)
+        worksheet3.set_column(5,5,13)
+        worksheet3.set_column(6,6,13)
+        worksheet3.set_column(7,7,13)
+        worksheet3.set_column(8,8,9)            
+
+
+
+        worksheet1.merge_range('A9:C9','Top Twenty Expense Individuals',merge_format)
+        worksheet1.merge_range('E9:F9','Top Twenty RX Prescriptions', merge_format)
+        worksheet1.merge_range('H9:I9','Top Twenty Prescription Fills Per Person', merge_format)
+        worksheet1.merge_range('K9:L9','Individuals Representing 80% of Total Cost', merge_format)
+        worksheet1.merge_range('A34:C34','New Individuals with Largest RX Totals', merge_format)
+
+        worksheet1.write('H11', 'MEMBER_NAME', format5)
+        worksheet1.write('I11','COUNT',format5)
+        worksheet1.write('E1','LARGEST RX GROUPS',format5)
+        worksheet1.write('A36','MEMBER NAME', format5)
+
+
+        writer.save()
+        return True
+    except:
+        return None
+            
+        
+#For single spreadsheet processing
+def make_me_a_spreadsheet2(FilePath, FileName, writer):
+    try:
+        df = pd.read_excel("C:\Users" + FilePath + FileName)
+
+        df.columns = ['GROUP','MEMBER_NAME','DRUG','CLAIM_DATE','SUB_QUANT','DAYS_SUPPLY','COPAY_AMT','TOTAL_COST']
+
+        df['GROUP'] = df['GROUP'].astype(str)
+
+
+        total_expense = df['TOTAL_COST'].sum()
+        Y = total_expense * .80
+        df['PERCENT'] = (df['TOTAL_COST'] / total_expense).round(4)
+          
+
+
+        df['MEMBER_NAME'].replace(emp_dict, inplace=True)
+        df.loc[df.DRUG.isin(['LATUDA TAB 20MG', 'LATUDA TAB 60MG','LATUDA TAB 40MG']), 'DRUG'] = 'LATUDA TAB'
+        df.loc[df.DRUG.isin(['HUMIRA START KIT 40MG PEN', 'HUMIRA PEN INJ 40MG/0.8','HUMIRA KIT 40MG SYN']), 'DRUG'] = 'HUMIRA'
+        df.loc[df.DRUG.isin(['ENBREL SCLIK SYR 50MG/ML', 'ENBREL SYR 50MG/ML','ENBREL SYR 25/0.5ML']), 'DRUG'] = 'ENBREL'
+        df.loc[df.DRUG.isin(['TRULICITY(4) PEN 1.5/0.5', 'TRULICITY(4) PEN 0.75/0.5']), 'DRUG'] = 'TRULICITY'
+
+
+        df2 = df['TOTAL_COST'].groupby(df['MEMBER_NAME']).sum().nlargest(10)
+        df3 = df['TOTAL_COST'].groupby(df['DRUG']).sum().nlargest(20)
+        df4 = df['MEMBER_NAME'].value_counts().nlargest(20)
+        df5 = df['PERCENT'].groupby(df['MEMBER_NAME']).sum().nlargest(20)
+        df7 = df[df['TOTAL_COST'] > 0]
+        df8 = df['TOTAL_COST'].groupby(df['MEMBER_NAME']).sum().nlargest(1000)
+        df13 = df['TOTAL_COST'].groupby(df['GROUP']).sum().nlargest(5)
+
+        count = 0
+        total = 0
+        for row in df8:
+            if total < Y:
+                total = total + row
+                count += 1
+        WW = count
+
+        Ind_count = df['MEMBER_NAME'].nunique()
+        Ind_count_nonzero = df7['MEMBER_NAME'].nunique()
+        twenty_percent1 = Ind_count_nonzero * .20
+        twenty_percent = round(twenty_percent1,0)
+        row_count = df.shape[0]
+
+        df10 = df['PERCENT'].groupby(df['MEMBER_NAME']).sum().nlargest(WW)
+
+
+
+
+        df['GROUP'].replace(group_dict, inplace=True)
+
+        df13 = df['TOTAL_COST'].groupby(df['GROUP']).sum().nlargest(5)
+        df3 = df3.reset_index()
+        df2 = df2.reset_index()
+        df4 = df4.reset_index()
+        df5 = df5.reset_index()
+        df10 = df10.reset_index()
+        df13 = df13.reset_index()
+
+        pivot2 = pd.pivot_table(df, index=['MEMBER_NAME','GROUP'],values=['TOTAL_COST'], aggfunc='sum')
+        pivot3 = pivot2.sort_values(by=['TOTAL_COST'],ascending=False)
+
+
+        pv3 = pivot3.head(20)
+        pv4 = pv3.reset_index()
+
+        pv4.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=0,startrow=10)
+        df3.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=4,startrow=10)
+        df4.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=7,startrow=10)
+        df10.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=10,startrow=10)
+        df13.to_excel(writer, sheet_name='Summary',index=False,header=True,startcol=4,startrow=0)
+        df.to_excel(writer, sheet_name='Raw Data',index=False,header=True)
+
+        worksheet1 = writer.sheets['Summary']
+        worksheet2 = writer.sheets['Raw Data']
+        workbook = writer.book
+
+        format1 = workbook.add_format({'num_format':'$#,###.##'})
+        format6 = workbook.add_format({'num_format':'$#,###.##','bold':True})
+        format2 = workbook.add_format({'bold': True})
+        format5 = workbook.add_format({'bold': True,'border':1,'align':'center'})
+        format3 = workbook.add_format({'bold': True, 'align': 'center'})
+        format4 = workbook.add_format({'num_format':'0.00%'})
+        merge_format = workbook.add_format({
+            'bold':1,
+            'border':1,
+            'align':'center'})
+
+
+        worksheet1.write('A1', "Caremark File Statistics", format2)
+        worksheet1.write('A6', "Individual Count:", format2)
+        worksheet1.write('A3', "Individual Non-Zero Count:", format2)
+        worksheet1.write('A4', "Twenty percent of all individuals:", format2)
+        worksheet1.write('A5', "Count representing eighty percent:", format2)
+        worksheet1.write('A2', "RX Total Expense:", format2)
+
+        worksheet1.write('B6', Ind_count, format2)
+        worksheet1.write('B3', Ind_count_nonzero, format2)
+        worksheet1.write('B4', twenty_percent, format2)
+        worksheet1.write('B5', WW, format2)
+        worksheet1.write('B2', total_expense, format6)
+
+
+        worksheet1.conditional_format('C12:C31',{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':1,
+                                    'format':format1})
+
+        worksheet1.conditional_format('F12:F31',{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':1,
+                                    'format':format1})
+
+        worksheet1.conditional_format(11,11,11+WW,11,{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':0,
+                                    'format':format4})
+
+        worksheet1.conditional_format('F2:F6',{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':0,
+                                    'format':format1})
+        worksheet2.conditional_format(1,8,row_count,8,{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':0,
+                                    'format':format4})
+
+
+
+        worksheet1.conditional_format('C37:C56',{'type':'cell',
+                                    'criteria':'>=',
+                                    'value':1,
+                                    'format':format1})            
+
+        worksheet1.set_column(0,0,32)
+        worksheet1.set_column(1,1,35)
+        worksheet1.set_column(2,2,12)
+        worksheet1.set_column(3,3,5)
+        worksheet1.set_column(4,4,36)
+        worksheet1.set_column(5,5,12)
+        worksheet1.set_column(6,6,5)
+        worksheet1.set_column(7,7,30)
+        worksheet1.set_column(8,8,12)
+        worksheet1.set_column(9,9,5)
+        worksheet1.set_column(10,10,30)
+        worksheet1.set_column(11,11,12)
+
+        worksheet2.set_column(0,0,35)
+        worksheet2.set_column(1,1,30)
+        worksheet2.set_column(2,2,35)
+        worksheet2.set_column(3,3,20)
+        worksheet2.set_column(4,4,13)
+        worksheet2.set_column(5,5,13)
+        worksheet2.set_column(6,6,13)
+        worksheet2.set_column(7,7,13)
+        worksheet2.set_column(8,8,9)
+        
+        worksheet1.merge_range('A9:C9','Top Twenty Expense Individuals',merge_format)
+        worksheet1.merge_range('E9:F9','Top Twenty RX Prescriptions', merge_format)
+        worksheet1.merge_range('H9:I9','Top Twenty Prescription Fills Per Person', merge_format)
+        worksheet1.merge_range('K9:L9','Individuals Representing 80% of Total Cost', merge_format)
+
+
+        worksheet1.write('H11', 'MEMBER_NAME', format5)
+        worksheet1.write('I11','COUNT',format5)
+        worksheet1.write('E1','LARGEST RX GROUPS',format5)
+
+
+        writer.save()
+        return True
+    except:
+        return None
+
+
+
+if __name__ == "__main__":
+    app = simpleapp_tk(None)
+    app.title('WB Caremark Cleaner')
+    app.mainloop()
+
+
+
+
